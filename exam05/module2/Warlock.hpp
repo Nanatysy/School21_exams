@@ -8,6 +8,8 @@
 #include <iostream>
 #include "ASpell.hpp"
 #include "ATarget.hpp"
+#include <vector>
+
 
 class Warlock
 {
@@ -15,7 +17,7 @@ class Warlock
 private:
 	std::string name;
 	std::string title;
-	ASpell **invent;
+	std::vector<ASpell *> invent;
 
 	Warlock();
 	Warlock(const Warlock & src);
@@ -32,11 +34,11 @@ public:
 	void introduce() const;
 
 	void learnSpell(ASpell *spell);
-	void forgetSpell(const std::string & name);
-	void launchSpell(const std::string & name, const ATarget & target) const;
+	void forgetSpell(std::string name);
+	void launchSpell(std::string name, ATarget & target) const;
 
-	int countInvent(void) const;
 };
+
 
 
 #endif //SCHOOL21_EXAMS_WARLOCK_HPP

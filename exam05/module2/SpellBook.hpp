@@ -6,11 +6,13 @@
 #define SCHOOL21_EXAMS_SPELLBOOK_HPP
 
 #include "ASpell.hpp"
+#include <vector>
+
 
 class SpellBook
 {
 private:
-	ASpell **invent;
+	std::vector<ASpell *> invent;
 
 	SpellBook(const SpellBook & src);
 	SpellBook & operator=(const SpellBook & src);
@@ -22,8 +24,6 @@ public:
 	void learnSpell(ASpell *spell);
 	void forgetSpell(const std::string & name);
 	ASpell *createSpell(const std::string & name) const;
-
-	int countInvent(void) const;
 };
 
 

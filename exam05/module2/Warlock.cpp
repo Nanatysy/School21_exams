@@ -4,7 +4,7 @@
 
 #include "Warlock.hpp"
 
-Warlock::Warlock() : invent(nullptr)
+Warlock::Warlock()
 {}
 
 Warlock::Warlock(const Warlock & src)
@@ -13,19 +13,19 @@ Warlock::Warlock(const Warlock & src)
 }
 
 Warlock::Warlock(const std::string & name, const std::string & title) : name
-(name), title(title), invent(nullptr)
+																				(name), title(title)
 {
 	std::cout << getName() << ": This looks like another boring day." <<
-	std::endl;
+			  std::endl;
 }
 
 Warlock::~Warlock()
 {
-	if (invent)
+	if (!invent.empty())
 	{
-		for (int i = 0; i < this->countInvent(); i++)
-			delete invent[i];
-		delete invent;
+		std::vector<ASpell *>::iterator it = invent.begin();
+		for ( ; it != invent.end(); it++)
+				delete *it;
 	}
 	std::cout << getName() << ": My job here is done!" << std::endl;
 }
@@ -48,7 +48,7 @@ void Warlock::setTitle(const std::string & src)
 void Warlock::introduce() const
 {
 	std::cout << getName() << ": I am " << getName() << ", " << getTitle() <<
-	"!" << std::endl;
+			  "!" << std::endl;
 }
 
 Warlock & Warlock::operator=(const Warlock & src)
@@ -58,102 +58,46 @@ Warlock & Warlock::operator=(const Warlock & src)
 
 	name = src.getName();
 	title = src.getTitle();
-
-	if (!src.invent)
-	{
-		invent = nullptr;
-	}
-	else
-	{
-		int size = src.countInvent();
-		int i;
-
-		invent = new ASpell* [size + 2];
-		for (i = 0; i < size; i++)
-		{
-			if (!src.invent[i])
-				invent[i] = nullptr;
-			else
-				invent[i] = src.invent[i]->clone();
-		}
-		invent[i] = nullptr;
-	}
+	invent = src.invent;
 
 	return (*this);
 }
 
 void Warlock::learnSpell(ASpell *spell)
 {
-	if (!invent)
-	{
-		invent = new ASpell* [2];
-		invent[0] = spell->clone();
-		invent[1] = nullptr;
-	}
-	else
-	{
-		ASpell **tmp;
-		int size = this->countInvent();
-		int i;
-
-		tmp = invent;
-		invent = new ASpell* [size + 2];
-		for (i = 0; i < size; i++)
-		{
-			if (!tmp[i])
-				invent[i] = nullptr;
-			else
-				invent[i] = tmp[i]->clone();
-		}
-		invent[i++] = spell->clone();
-		invent[i] = nullptr;
-		for (i = 0; i < size; i++)
-			delete tmp[i];
-		delete tmp;
-	}
+	invent.push_back(spell->clone());
 }
 
-int Warlock::countInvent(void) const
+void Warlock::forgetSpell(std::string name)
 {
-	int i;
-
-	i = 0;
-	if (!invent)
-		return (0);
-	while (this->invent[i])
-		i++;
-	return (i);
-}
-
-void Warlock::forgetSpell(const std::string & name)
-{
-	if (!invent)
+	if (invent.empty())
 		return ;
 
-	for (int i = 0; i < this->countInvent(); i++)
+	std::vector<ASpell *>::iterator it = invent.begin();
+	for ( ; it != invent.end(); it++)
 	{
-		if (invent[i]->getName() == name)
+		if ((*it)->getName() == name)
 		{
-			delete invent[i];
-			invent[i] = nullptr;
-			// break??
+			delete *it;
+			invent.erase(it);
+			return ;
 		}
 	}
 }
 
-void Warlock::launchSpell(const std::string & name, const ATarget &target) const
+void Warlock::launchSpell(std::string name, ATarget &target) const
 {
-	int i;
-	int size;
+	if (invent.empty())
+		return ;
 
-	size = this->countInvent();
-	for (i = 0; i < size; i++)
+	std::vector<ASpell *>::const_iterator it = invent.begin();
+	for ( ; it != invent.end(); it++)
 	{
-		if (invent[i]->getName() == name)
+		if ((*it)->getName() == name)
 		{
-			invent[i]->launch(target);
-			break;
+			(*it)->launch(target);
 		}
 	}
 }
+
 

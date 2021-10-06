@@ -6,11 +6,12 @@
 #define SCHOOL21_EXAMS_TARGETGENERATOR_HPP
 
 #include "ATarget.hpp"
+#include <vector>
 
 class TargetGenerator
 {
 private:
-	ATarget **invent;
+	std::vector<ATarget *> invent;
 
 	TargetGenerator(const TargetGenerator & src);
 	TargetGenerator & operator=(const TargetGenerator & src);
@@ -23,7 +24,6 @@ public:
 	void forgetTargetType(std::string const &name);
 	ATarget* createTarget(const std::string & name) const;
 
-	int countInvent(void) const;
 };
 
 

@@ -6,6 +6,7 @@
 #define SCHOOL21_EXAMS_WARLOCK_HPP
 
 #include <iostream>
+#include <vector>
 #include "ASpell.hpp"
 #include "ATarget.hpp"
 
@@ -15,13 +16,11 @@ class Warlock
 private:
 	std::string name;
 	std::string title;
-	ASpell **invent;
+	std::vector<ASpell *> invent;
 
 	Warlock();
 	Warlock(const Warlock & src);
 	Warlock & operator=(const Warlock & src);
-
-	int countInvent(void) const;
 
 public:
 	Warlock(const std::string & name, const std::string & title);

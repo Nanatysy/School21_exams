@@ -4,7 +4,7 @@
 
 #include "TargetGenerator.hpp"
 
-TargetGenerator::TargetGenerator() : invent(nullptr)
+TargetGenerator::TargetGenerator()
 {}
 
 TargetGenerator::TargetGenerator(const TargetGenerator &src)
@@ -14,11 +14,11 @@ TargetGenerator::TargetGenerator(const TargetGenerator &src)
 
 TargetGenerator::~TargetGenerator()
 {
-	if (invent)
+	if (!invent.empty())
 	{
-		for (int i = 0; i < this->countInvent(); i++)
-			delete invent[i];
-		delete invent;
+		std::vector<ATarget *>::iterator it = invent.begin();
+		for ( ; it != invent.end(); it++)
+				delete *it;
 	}
 }
 
@@ -27,99 +27,45 @@ TargetGenerator &TargetGenerator::operator=(const TargetGenerator &src)
 	if (this == &src)
 		return (*this);
 
-	if (!src.invent)
-	{
-		invent = nullptr;
-	}
-	else
-	{
-		int size = src.countInvent();
-		int i;
-
-		invent = new ATarget* [size + 2];
-		for (i = 0; i < size; i++)
-		{
-			if (!src.invent[i])
-				invent[i] = nullptr;
-			else
-				invent[i] = src.invent[i]->clone();
-		}
-		invent[i] = nullptr;
-	}
+	invent = src.invent;
 
 	return *this;
 }
 
 void TargetGenerator::learnTargetType(ATarget *target)
 {
-	if (!invent)
-	{
-		invent = new ATarget* [2];
-		invent[0] = target->clone();
-		invent[1] = nullptr;
-	}
-	else
-	{
-		ATarget **tmp;
-		int size = this->countInvent();
-		int i;
-
-		tmp = invent;
-		invent = new ATarget* [size + 2];
-		for (i = 0; i < size; i++)
-		{
-			if (!tmp[i])
-				invent[i] = nullptr;
-			else
-				invent[i] = tmp[i]->clone();
-		}
-		invent[i++] = target->clone();
-		invent[i] = nullptr;
-		for (i = 0; i < size; i++)
-			delete tmp[i];
-		delete tmp;
-	}
+	invent.push_back(target->clone());
 }
 
 void TargetGenerator::forgetTargetType(const std::string & name)
 {
-	if (!invent)
+	if (invent.empty())
 		return ;
 
-	for (int i = 0; i < this->countInvent(); i++)
+	std::vector<ATarget *>::iterator it = invent.begin();
+	for ( ; it != invent.end(); it++)
 	{
-		if (invent[i]->getType() == name)
+		if ((*it)->getType() == name)
 		{
-			delete invent[i];
-			invent[i] = nullptr;
-			// break??
+			delete *it;
+			invent.erase(it);
+			return ;
 		}
 	}
 }
 
 ATarget *TargetGenerator::createTarget(const std::string &name) const
 {
-	if (!invent)
+	if (invent.empty())
 		return (nullptr);
 
-	for (int i = 0; i < this->countInvent(); i++)
+	std::vector<ATarget *>::const_iterator it = invent.begin();
+	for ( ; it != invent.end(); it++)
 	{
-		if (invent[i]->getType() == name)
+		if ((*it)->getType() == name)
 		{
-			return invent[i]->clone();
+			return (*it)->clone();
 		}
 	}
 	return (nullptr);
-}
-
-int TargetGenerator::countInvent(void) const
-{
-	int i;
-
-	i = 0;
-	if (!invent)
-		return (0);
-	while (this->invent[i])
-		i++;
-	return (i);
 }

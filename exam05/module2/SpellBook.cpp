@@ -4,7 +4,7 @@
 
 #include "SpellBook.hpp"
 
-SpellBook::SpellBook() : invent(nullptr)
+SpellBook::SpellBook()
 {}
 
 SpellBook::SpellBook(const SpellBook &src)
@@ -14,11 +14,11 @@ SpellBook::SpellBook(const SpellBook &src)
 
 SpellBook::~SpellBook()
 {
-	if (invent)
+	if (!invent.empty())
 	{
-		for (int i = 0; i < this->countInvent(); i++)
-			delete invent[i];
-		delete invent;
+		std::vector<ASpell *>::iterator it = invent.begin();
+		for ( ; it != invent.end(); it++)
+			delete *it;
 	}
 }
 
@@ -27,100 +27,45 @@ SpellBook &SpellBook::operator=(const SpellBook &src)
 	if (this == &src)
 		return (*this);
 
-	if (!src.invent)
-	{
-		invent = nullptr;
-	}
-	else
-	{
-		int size = src.countInvent();
-		int i;
-
-		invent = new ASpell* [size + 2];
-		for (i = 0; i < size; i++)
-		{
-			if (!src.invent[i])
-				invent[i] = nullptr;
-			else
-				invent[i] = src.invent[i]->clone();
-		}
-		invent[i] = nullptr;
-	}
+	invent = src.invent;
 
 	return *this;
 }
 
 void SpellBook::learnSpell(ASpell *spell)
 {
-	if (!invent)
-	{
-		invent = new ASpell* [2];
-		invent[0] = spell->clone();
-		invent[1] = nullptr;
-	}
-	else
-	{
-		ASpell **tmp;
-		int size = this->countInvent();
-		int i;
-
-		tmp = invent;
-		invent = new ASpell* [size + 2];
-		for (i = 0; i < size; i++)
-		{
-			if (!tmp[i])
-				invent[i] = nullptr;
-			else
-				invent[i] = tmp[i]->clone();
-		}
-		invent[i++] = spell->clone();
-		invent[i] = nullptr;
-		for (i = 0; i < size; i++)
-			delete tmp[i];
-		delete tmp;
-	}
+	invent.push_back(spell->clone());
 }
 
 void SpellBook::forgetSpell(const std::string & name)
 {
-	if (!invent)
+	if (invent.empty())
 		return ;
 
-	for (int i = 0; i < this->countInvent(); i++)
+	std::vector<ASpell *>::iterator it = invent.begin();
+	for ( ; it != invent.end(); it++)
 	{
-		if (invent[i]->getName() == name)
+		if ((*it)->getName() == name)
 		{
-			delete invent[i];
-			invent[i] = nullptr;
-			// break??
+			delete *it;
+			invent.erase(it);
+			return ;
 		}
 	}
 }
 
 ASpell* SpellBook::createSpell(const std::string & name) const
 {
-	if (!invent)
+	if (invent.empty())
 		return (nullptr);
 
-	for (int i = 0; i < this->countInvent(); i++)
+	std::vector<ASpell *>::const_iterator it = invent.begin();
+	for ( ; it != invent.end(); it++)
 	{
-		if (invent[i]->getName() == name)
+		if ((*it)->getName() == name)
 		{
-			return invent[i]->clone();
+			return (*it)->clone();
 		}
 	}
 	return (nullptr);
 }
-
-int SpellBook::countInvent(void) const
-{
-	int i;
-
-	i = 0;
-	if (!invent)
-		return (0);
-	while (this->invent[i])
-		i++;
-	return (i);
-}
-
