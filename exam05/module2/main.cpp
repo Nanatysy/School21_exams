@@ -32,4 +32,13 @@ int main()
 	richard.introduce();
 	richard.launchSpell("Polymorph", *wall);
 	richard.launchSpell("Fireball", *wall);
+
+//	ATarget* wall2 = tarGen.createTarget("Inconspicuous Red-brick Wall");
+
+	delete wall; // subject main leak
+
+	wall = tarGen.createTarget("Inconspicuourick Wall");
+	richard.launchSpell("Polymorph", *wall); // so dumb
+
+	delete wall;
 }

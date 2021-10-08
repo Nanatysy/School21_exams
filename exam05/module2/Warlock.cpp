@@ -5,28 +5,27 @@
 #include "Warlock.hpp"
 
 Warlock::Warlock()
-{}
+{
+	book = new SpellBook();
+}
 
 Warlock::Warlock(const Warlock & src)
 {
+	book = new SpellBook();
 	*this = src;
 }
 
 Warlock::Warlock(const std::string & name, const std::string & title) : name
 																				(name), title(title)
 {
+	book = new SpellBook();
 	std::cout << getName() << ": This looks like another boring day." <<
 			  std::endl;
 }
 
 Warlock::~Warlock()
 {
-	if (!invent.empty())
-	{
-		std::vector<ASpell *>::iterator it = invent.begin();
-		for ( ; it != invent.end(); it++)
-				delete *it;
-	}
+	delete book;
 	std::cout << getName() << ": My job here is done!" << std::endl;
 }
 
@@ -58,45 +57,30 @@ Warlock & Warlock::operator=(const Warlock & src)
 
 	name = src.getName();
 	title = src.getTitle();
-	invent = src.invent;
 
 	return (*this);
 }
 
 void Warlock::learnSpell(ASpell *spell)
 {
-	invent.push_back(spell->clone());
+	book->learnSpell(spell);
 }
 
 void Warlock::forgetSpell(std::string name)
 {
-	if (invent.empty())
-		return ;
-
-	std::vector<ASpell *>::iterator it = invent.begin();
-	for ( ; it != invent.end(); it++)
-	{
-		if ((*it)->getName() == name)
-		{
-			delete *it;
-			invent.erase(it);
-			return ;
-		}
-	}
+	book->forgetSpell(name);
 }
 
 void Warlock::launchSpell(std::string name, ATarget &target) const
 {
-	if (invent.empty())
-		return ;
+	ASpell *tmp;
 
-	std::vector<ASpell *>::const_iterator it = invent.begin();
-	for ( ; it != invent.end(); it++)
+	tmp = book->createSpell(name);
+	if (tmp)
 	{
-		if ((*it)->getName() == name)
-		{
-			(*it)->launch(target);
-		}
+		if (&target != nullptr)
+			tmp->launch(target);
+		delete tmp;
 	}
 }
 

@@ -66,6 +66,7 @@ Warlock & Warlock::operator=(const Warlock & src)
 void Warlock::learnSpell(ASpell *spell)
 {
 	invent.push_back(spell->clone());
+	delete spell;
 }
 
 void Warlock::forgetSpell(std::string name)

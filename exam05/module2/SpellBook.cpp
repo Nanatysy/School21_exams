@@ -35,6 +35,7 @@ SpellBook &SpellBook::operator=(const SpellBook &src)
 void SpellBook::learnSpell(ASpell *spell)
 {
 	invent.push_back(spell->clone());
+	delete spell;
 }
 
 void SpellBook::forgetSpell(const std::string & name)

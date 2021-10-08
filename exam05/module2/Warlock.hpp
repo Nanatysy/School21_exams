@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include "ASpell.hpp"
+#include "SpellBook.hpp"
 #include "ATarget.hpp"
 #include <vector>
 
@@ -17,7 +18,7 @@ class Warlock
 private:
 	std::string name;
 	std::string title;
-	std::vector<ASpell *> invent;
+	SpellBook *book;
 
 	Warlock();
 	Warlock(const Warlock & src);
