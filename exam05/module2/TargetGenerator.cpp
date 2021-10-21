@@ -48,8 +48,8 @@ void TargetGenerator::forgetTargetType(const std::string & name)
 		if ((*it)->getType() == name)
 		{
 			delete *it;
-			invent.erase(it);
-			return ;
+			it = invent.erase(it);
+			--it;
 		}
 	}
 }

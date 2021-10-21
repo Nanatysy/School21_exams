@@ -26,11 +26,15 @@ int main()
 	Fireball* fireball = new Fireball();
 
 	richard.learnSpell(fireball);
+	richard.learnSpell(fireball);
+	richard.learnSpell(fireball);
 
 	ATarget* wall = tarGen.createTarget("Inconspicuous Red-brick Wall");
 
 	richard.introduce();
 	richard.launchSpell("Polymorph", *wall);
+	richard.launchSpell("Fireball", *wall);
+	richard.forgetSpell("Fireball");
 	richard.launchSpell("Fireball", *wall);
 
 //	ATarget* wall2 = tarGen.createTarget("Inconspicuous Red-brick Wall");

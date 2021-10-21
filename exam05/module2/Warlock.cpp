@@ -66,12 +66,12 @@ void Warlock::learnSpell(ASpell *spell)
 	book->learnSpell(spell);
 }
 
-void Warlock::forgetSpell(std::string name)
+void Warlock::forgetSpell(const std::string & name)
 {
 	book->forgetSpell(name);
 }
 
-void Warlock::launchSpell(std::string name, ATarget &target) const
+void Warlock::launchSpell(const std::string & name, ATarget &target) const
 {
 	ASpell *tmp;
 

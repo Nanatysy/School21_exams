@@ -35,7 +35,6 @@ SpellBook &SpellBook::operator=(const SpellBook &src)
 void SpellBook::learnSpell(ASpell *spell)
 {
 	invent.push_back(spell->clone());
-	delete spell;
 }
 
 void SpellBook::forgetSpell(const std::string & name)
@@ -44,13 +43,13 @@ void SpellBook::forgetSpell(const std::string & name)
 		return ;
 
 	std::vector<ASpell *>::iterator it = invent.begin();
-	for ( ; it != invent.end(); it++)
+	for ( ; it != invent.end(); ++it)
 	{
 		if ((*it)->getName() == name)
 		{
 			delete *it;
 			invent.erase(it);
-			return ;
+			--it;
 		}
 	}
 }
